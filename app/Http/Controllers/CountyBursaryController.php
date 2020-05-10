@@ -81,12 +81,39 @@ class CountyBursaryController extends Controller
      */
     public function storeBursaryInformation(Request $request)
     {
+        $storagefeespath="uploads/fees/county/";
+        $storageresultspath="uploads/results/county/";
+        $storageletterpath="uploads/admissionletters/county/";
+        /**fees */
+        $feesfiles=$request->file('feesattachmentpath');
+        $feesfileextension=$feesfiles->getClientOriginalExtension();
+        $feesnewname=$request->user_id."_fees.".$feesfileextension;
+        $feesfiles->move($storagefeespath,$feesnewname);
+        /**
+         * end 
+         * fees
+         */
+        $admissionletterfiles=$request->file('admissionletterpath');
+        $admissionletterfileextension=$admissionletterfiles->getClientOriginalExtension();
+        $admissionletternewname=$request->user_id."_admission_letter.".$admissionletterfileextension;
+        $admissionletterfiles->move($storageletterpath,$admissionletternewname);
+        /**
+         * end admission letter
+         *
+         */
+        $resultsfiles=$request->file('latestresultspath');
+        $resultsfileextension=$resultsfiles->getClientOriginalExtension();
+        $resultsnewname=$request->user_id."_latestresults.".$resultsfileextension;
+        $resultsfiles->move($storageresultspath,$resultsnewname);
+        /**
+         * end results
+         */
         CountyBursaryModel::updateOrCreate(['user_id'=>$request->user_id],[
         'user_id'=>$request->user_id,   
         'feesbalance'=>$request->feesbalance,
-        'feesattachmentpath'=>$request->feesattachmentpath,
-        'admissionletterpath'=>$request->admissionletterpath,
-        'latestresultspath'=>$request->latestresultspath,]);
+        'feesattachmentpath'=>$feesnewname,
+        'admissionletterpath'=>$admissionletternewname,
+        'latestresultspath'=>$resultsnewname,]);
         return redirect()->back()->with('success','succesfully saved data !');
     }
     /**

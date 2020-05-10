@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\WardBursaryModel;
 use Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -24,11 +26,10 @@ class UserController extends Controller
     public function index()
     {
         $user = Auth::user();
-
         if ($user->isAdmin()) {
-            return view('pages.admin.home');
+            $applicants=DB::table('wardbursaryapplication')->get();
+        return view('pages.admin.home')->with("applicants", $applicants);
         }
-
         return view('pages.user.home');
     }
 }
